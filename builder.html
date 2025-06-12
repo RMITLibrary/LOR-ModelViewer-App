@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Model Viewer Builder</title>
+    <script
+      type="module"
+      src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
+    ></script>
+    <style>
+      :root {
+        --primary-color: #2563eb;
+        --error-color: #dc2626;
+        --success-color: #16a34a;
+        --border-color: #e5e7eb;
+        --bg-color: #f9fafb;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        line-height: 1.5;
+        color: #1f2937;
+        background: var(--bg-color);
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+
+      .builder-panel {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .preview-panel {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 2rem;
+      }
+
+      h1 {
+        margin-bottom: 1.5rem;
+        color: #111827;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      input[type="text"],
+      input[type="url"],
+      select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      input[type="range"] {
+        width: 100%;
+      }
+
+      .range-value {
+        display: inline-block;
+        min-width: 3rem;
+        text-align: right;
+      }
+
+      .tabs {
+        display: flex;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .tab {
+        padding: 0.75rem 1.5rem;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+      }
+
+      .tab.active {
+        border-bottom-color: var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      button {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+
+      button:hover {
+        opacity: 0.9;
+      }
+
+      .output {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: #f3f4f6;
+        border-radius: 4px;
+        position: relative;
+        max-width: 100%;
+        overflow-x: auto;
+      }
+
+      .output pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin: 0;
+        padding-right: 2rem;
+      }
+
+      .copy-button {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: white;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+      }
+
+      .success-message {
+        display: none;
+        color: var(--success-color);
+        margin-top: 0.5rem;
+      }
+
+      .error-message {
+        color: var(--error-color);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+      }
+
+      .preview-container {
+        width: 100%;
+        aspect-ratio: 16/9;
+        background: #f3f4f6;
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .preview-container model-viewer {
+        width: 100%;
+        height: 100%;
+      }
+
+      .preview-placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #6b7280;
+      }
+
+      @media (max-width: 1024px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+        .preview-panel {
+          position: static;
+        }
+      }
+
+      .help-section {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: #f9fafb;
+        border-radius: 4px;
+      }
+
+      .help-section h3 {
+        color: #111827;
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+      }
+
+      .help-section h4 {
+        color: #374151;
+        margin: 1rem 0 0.5rem;
+        font-size: 1.1rem;
+      }
+
+      .help-section ul,
+      .help-section ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .help-section li {
+        margin-bottom: 0.5rem;
+      }
+
+      .faq-item {
+        margin-bottom: 1.5rem;
+      }
+
+      .faq-item ul {
+        margin-top: 0.5rem;
+      }
+
+      .help-section strong {
+        color: #1f2937;
+      }
+
+      .format-hint {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="builder-panel">
+        <h1>3D Model Viewer Builder</h1>
+
+        <div class="tabs">
+          <div class="tab active" data-tab="basic">Basic Settings</div>
+          <div class="tab" data-tab="advanced">Advanced Settings</div>
+          <div class="tab" data-tab="help">How to Use</div>
+        </div>
+
+        <form id="builderForm">
+          <div class="tab-content active" id="basic">
+            <div class="form-group">
+              <label for="modelUrl">Model URL *</label>
+              <input
+                type="url"
+                id="modelUrl"
+                required
+                placeholder="https://example.com/model.glb"
+              />
+              <div class="error-message" id="modelUrlError"></div>
+              <div class="format-hint">
+                Supported formats: .glb, .gltf, .usdz, .obj, .mtl
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="title">Title</label>
+              <input
+                type="text"
+                id="title"
+                placeholder="Enter a title for the model"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description</label>
+              <input
+                type="text"
+                id="description"
+                placeholder="Enter a description"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="aspectRatio">Aspect Ratio</label>
+              <select id="aspectRatio">
+                <option value="16:9">16:9 (Widescreen)</option>
+                <option value="4:3">4:3 (Standard)</option>
+                <option value="1:1">1:1 (Square)</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="customRatioGroup" style="display: none">
+              <label>Custom Ratio</label>
+              <div style="display: flex; gap: 1rem">
+                <div style="flex: 1">
+                  <label for="width">Width</label>
+                  <input
+                    type="number"
+                    id="width"
+                    min="1"
+                    max="100"
+                    value="16"
+                  />
+                </div>
+                <div style="flex: 1">
+                  <label for="height">Height</label>
+                  <input
+                    type="number"
+                    id="height"
+                    min="1"
+                    max="100"
+                    value="9"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="advanced">
+            <div class="form-group">
+              <label for="environmentImage">Environment</label>
+              <select id="environmentImage">
+                <option value="neutral">Neutral</option>
+                <option value="legacy">Legacy</option>
+                <option value="sunset">Sunset</option>
+                <option value="dawn">Dawn</option>
+                <option value="night">Night</option>
+                <option value="warehouse">Warehouse</option>
+                <option value="forest">Forest</option>
+                <option value="apartment">Apartment</option>
+                <option value="studio">Studio</option>
+                <option value="city">City</option>
+                <option value="park">Park</option>
+                <option value="lobby">Lobby</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="fieldOfView"
+                >Field of View: <span class="range-value">45</span>°</label
+              >
+              <input
+                type="range"
+                id="fieldOfView"
+                min="10"
+                max="90"
+                value="45"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="minZoom"
+                >Minimum Zoom: <span class="range-value">25</span>%</label
+              >
+              <input type="range" id="minZoom" min="10" max="100" value="25" />
+            </div>
+
+            <div class="form-group">
+              <label for="maxZoom"
+                >Maximum Zoom: <span class="range-value">200</span>%</label
+              >
+              <input
+                type="range"
+                id="maxZoom"
+                min="100"
+                max="500"
+                value="200"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="rotationSpeed"
+                >Rotation Speed: <span class="range-value">30</span>°/s</label
+              >
+              <input
+                type="range"
+                id="rotationSpeed"
+                min="0"
+                max="360"
+                value="30"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="autoRotate">Auto Rotate</label>
+              <select id="autoRotate">
+                <option value="true">Enabled</option>
+                <option value="false">Disabled</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="tab-content" id="help">
+            <div class="help-section">
+              <h3>Supported 3D Model Formats</h3>
+              <ul>
+                <li>
+                  <strong>glTF/GLB</strong> (`.glb`, `.gltf`) - Recommended
+                  format, best performance and features
+                </li>
+                <li>
+                  <strong>USDZ</strong> (`.usdz`) - For iOS AR Quick Look
+                  support
+                </li>
+                <li><strong>OBJ</strong> (`.obj`) - Basic 3D model format</li>
+                <li>
+                  <strong>MTL</strong> (`.mtl`) - Material files for OBJ models
+                </li>
+              </ul>
+            </div>
+
+            <div class="help-section">
+              <h3>How to Use</h3>
+              <ol>
+                <li>Enter your 3D model URL in the Model URL field</li>
+                <li>Add a title and description (optional)</li>
+                <li>Select your preferred aspect ratio</li>
+                <li>Adjust advanced settings if needed</li>
+                <li>Click "Generate Embed Code"</li>
+                <li>Copy the generated code and paste it into your website</li>
+              </ol>
+            </div>
+
+            <div class="help-section">
+              <h3>Tips for Best Results</h3>
+              <ul>
+                <li>Use glTF/GLB format for best performance</li>
+                <li>Keep model file sizes under 50MB for optimal loading</li>
+                <li>Ensure your model is properly scaled and centered</li>
+                <li>Test the preview before embedding</li>
+                <li>Consider mobile users when setting aspect ratio</li>
+              </ul>
+            </div>
+
+            <div class="help-section">
+              <h3>Common Issues & Solutions</h3>
+              <div class="faq-item">
+                <h4>Model not loading?</h4>
+                <ul>
+                  <li>Check if the URL is accessible</li>
+                  <li>Verify the file format is supported</li>
+                  <li>Ensure the file size isn't too large</li>
+                  <li>Check if the server allows CORS</li>
+                </ul>
+              </div>
+              <div class="faq-item">
+                <h4>AR not working?</h4>
+                <ul>
+                  <li>Ensure you're using a supported device</li>
+                  <li>
+                    Check if the model format is compatible (glTF/GLB or USDZ)
+                  </li>
+                  <li>Verify the model has proper scale and orientation</li>
+                </ul>
+              </div>
+              <div class="faq-item">
+                <h4>Performance issues?</h4>
+                <ul>
+                  <li>Optimise your 3D model (reduce polygon count)</li>
+                  <li>Use compressed textures</li>
+                  <li>Consider using a CDN for faster loading</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="help-section">
+              <h3>Advanced Features</h3>
+              <ul>
+                <li>
+                  <strong>Environment Images:</strong> Choose from various
+                  lighting environments
+                </li>
+                <li>
+                  <strong>Field of View:</strong> Adjust how much of the scene
+                  is visible
+                </li>
+                <li>
+                  <strong>Zoom Levels:</strong> Control how close users can zoom
+                  to the model
+                </li>
+                <li>
+                  <strong>Auto-rotate:</strong> Enable automatic model rotation
+                </li>
+                <li>
+                  <strong>AR Support:</strong> View models in augmented reality
+                  on supported devices
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <button type="submit">Generate Embed Code</button>
+        </form>
+
+        <div class="output" id="output" style="display: none">
+          <button class="copy-button" id="copyButton">Copy</button>
+          <pre id="embedCode"></pre>
+          <div class="success-message" id="copySuccess">
+            Copied to clipboard!
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-panel">
+        <h2>Live Preview</h2>
+        <div class="preview-container">
+          <div class="preview-placeholder" id="previewPlaceholder">
+            Enter a model URL to see preview
+          </div>
+          <model-viewer id="previewViewer" style="display: none"></model-viewer>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Tab switching
+      document.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab")
+            .forEach((t) => t.classList.remove("active"));
+          document
+            .querySelectorAll(".tab-content")
+            .forEach((c) => c.classList.remove("active"));
+          tab.classList.add("active");
+          document.getElementById(tab.dataset.tab).classList.add("active");
+        });
+      });
+
+      // Aspect ratio handling
+      document.getElementById("aspectRatio").addEventListener("change", (e) => {
+        const customGroup = document.getElementById("customRatioGroup");
+        customGroup.style.display =
+          e.target.value === "custom" ? "block" : "none";
+        updatePreview();
+      });
+
+      // Range value display
+      document.querySelectorAll('input[type="range"]').forEach((input) => {
+        const valueDisplay = input.parentElement.querySelector(".range-value");
+        input.addEventListener("input", () => {
+          valueDisplay.textContent = input.value;
+          updatePreview();
+        });
+      });
+
+      // Update preview when any setting changes
+      document.querySelectorAll("input, select").forEach((input) => {
+        input.addEventListener("change", updatePreview);
+      });
+
+      // Update preview function
+      function updatePreview() {
+        const modelUrl = document.getElementById("modelUrl").value;
+        const previewViewer = document.getElementById("previewViewer");
+        const previewPlaceholder =
+          document.getElementById("previewPlaceholder");
+
+        if (!modelUrl) {
+          previewViewer.style.display = "none";
+          previewPlaceholder.style.display = "block";
+          return;
+        }
+
+        // Validate file format for preview
+        const supportedFormats = [".glb", ".gltf", ".usdz", ".obj", ".mtl"];
+        const isValidFormat = supportedFormats.some((format) =>
+          modelUrl.toLowerCase().endsWith(format)
+        );
+
+        if (!isValidFormat) {
+          previewViewer.style.display = "none";
+          previewPlaceholder.style.display = "block";
+          previewPlaceholder.textContent = `Unsupported file format. Supported formats are: ${supportedFormats.join(
+            ", "
+          )}`;
+          return;
+        }
+
+        previewPlaceholder.textContent = "Enter a model URL to see preview";
+
+        // Add error handling for model loading
+        previewViewer.addEventListener("error", (error) => {
+          console.error("Model loading error:", error);
+          previewViewer.style.display = "none";
+          previewPlaceholder.style.display = "block";
+
+          // Check for CORS error
+          if (
+            error.detail &&
+            error.detail.type === "error" &&
+            (error.detail.message.includes("CORS") ||
+              error.detail.message.includes("Access-Control-Allow-Origin"))
+          ) {
+            previewPlaceholder.innerHTML = `
+              <div style="color: #dc2626; margin-bottom: 1rem;">
+                <strong>CORS Error:</strong> Unable to load model due to CORS restrictions.
+              </div>
+              <div style="text-align: left; font-size: 0.9rem;">
+                <p>To fix this, the server hosting your 3D model needs to:</p>
+                <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                  <li>Add the following header to its response:
+                    <pre style="background: #f3f4f6; padding: 0.5rem; margin: 0.5rem 0; border-radius: 4px;">
+Access-Control-Allow-Origin: *</pre>
+                  </li>
+                  <li>Or, for better security, specify your domain:
+                    <pre style="background: #f3f4f6; padding: 0.5rem; margin: 0.5rem 0; border-radius: 4px;">
+Access-Control-Allow-Origin: https://your-domain.com</pre>
+                  </li>
+                </ol>
+                <p style="margin-top: 1rem;">Contact your server administrator to add these headers.</p>
+              </div>
+            `;
+          } else {
+            previewPlaceholder.textContent =
+              "Error loading model. Please check the URL and try again.";
+          }
+        });
+
+        // Get all values
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+        const aspectRatio = document.getElementById("aspectRatio").value;
+        const width = document.getElementById("width").value;
+        const height = document.getElementById("height").value;
+        const environmentImage =
+          document.getElementById("environmentImage").value;
+        const fieldOfView = document.getElementById("fieldOfView").value;
+        const minZoom = document.getElementById("minZoom").value;
+        const maxZoom = document.getElementById("maxZoom").value;
+        const rotationSpeed = document.getElementById("rotationSpeed").value;
+        const autoRotate = document.getElementById("autoRotate").value;
+
+        // Update preview container aspect ratio
+        const container = document.querySelector(".preview-container");
+        if (aspectRatio === "custom") {
+          container.style.aspectRatio = `${width}/${height}`;
+        } else {
+          const [w, h] = aspectRatio.split(":");
+          container.style.aspectRatio = aspectRatio;
+        }
+
+        // Update model-viewer attributes
+        previewViewer.setAttribute("src", modelUrl);
+        previewViewer.setAttribute("camera-controls", "");
+        previewViewer.setAttribute("auto-rotate", autoRotate);
+        previewViewer.setAttribute("environment-image", environmentImage);
+        previewViewer.setAttribute("min-camera-orbit", `auto auto ${minZoom}%`);
+        previewViewer.setAttribute("max-camera-orbit", `auto auto ${maxZoom}%`);
+        previewViewer.setAttribute("field-of-view", `${fieldOfView}deg`);
+        previewViewer.setAttribute(
+          "rotation-per-second",
+          `${rotationSpeed}deg`
+        );
+        previewViewer.setAttribute("ar", "");
+        previewViewer.setAttribute("ar-modes", "webxr scene-viewer quick-look");
+        previewViewer.setAttribute("ar-scale", "fixed");
+        previewViewer.setAttribute("ar-placement", "floor");
+        previewViewer.setAttribute("touch-action", "pan-y pinch-zoom");
+        previewViewer.setAttribute("interaction-prompt", "auto");
+        previewViewer.setAttribute("interaction-prompt-style", "basic");
+        previewViewer.setAttribute("interaction-prompt-threshold", "0");
+
+        // Show preview
+        previewViewer.style.display = "block";
+        previewPlaceholder.style.display = "none";
+      }
+
+      // Form submission
+      document.getElementById("builderForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        // Validate model URL
+        const modelUrl = document.getElementById("modelUrl").value;
+        if (!modelUrl) {
+          document.getElementById("modelUrlError").textContent =
+            "Model URL is required";
+          return;
+        }
+
+        // Validate file format
+        const supportedFormats = [".glb", ".gltf", ".usdz", ".obj", ".mtl"];
+        const isValidFormat = supportedFormats.some((format) =>
+          modelUrl.toLowerCase().endsWith(format)
+        );
+
+        if (!isValidFormat) {
+          document.getElementById(
+            "modelUrlError"
+          ).textContent = `Unsupported file format. Supported formats are: ${supportedFormats.join(
+            ", "
+          )}`;
+          return;
+        }
+
+        document.getElementById("modelUrlError").textContent = "";
+
+        // Get all values
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+        const aspectRatio = document.getElementById("aspectRatio").value;
+        const width = document.getElementById("width").value;
+        const height = document.getElementById("height").value;
+        const environmentImage =
+          document.getElementById("environmentImage").value;
+        const fieldOfView = document.getElementById("fieldOfView").value;
+        const minZoom = document.getElementById("minZoom").value;
+        const maxZoom = document.getElementById("maxZoom").value;
+        const rotationSpeed = document.getElementById("rotationSpeed").value;
+        const autoRotate = document.getElementById("autoRotate").value;
+
+        // Build URL parameters
+        const params = new URLSearchParams();
+        params.set("model", modelUrl);
+        if (title) params.set("title", title);
+        if (description) params.set("description", description);
+        if (aspectRatio === "custom") {
+          params.set("width", width);
+          params.set("height", height);
+        } else {
+          const [w, h] = aspectRatio.split(":");
+          params.set("width", w);
+          params.set("height", h);
+        }
+        params.set("environmentImage", environmentImage);
+        params.set("fieldOfView", fieldOfView);
+        params.set("minZoom", minZoom);
+        params.set("maxZoom", maxZoom);
+        params.set("rotationSpeed", rotationSpeed);
+        params.set("autoRotate", autoRotate);
+
+        // Get the current page URL and construct the full viewer URL
+        const currentUrl = window.location.href;
+        const viewerUrl =
+          currentUrl.substring(0, currentUrl.lastIndexOf("/") + 1) +
+          "viewer.html";
+
+        // Generate embed code with full URL
+        const embedCode = `<iframe
+    src="${viewerUrl}?${params.toString()}"
+    width="100%"
+    frameborder="0"
+    allow="fullscreen; camera; xr-spatial-tracking"
+    allowfullscreen>
+</iframe>`;
+
+        // Display output
+        document.getElementById("embedCode").textContent = embedCode;
+        document.getElementById("output").style.display = "block";
+      });
+
+      // Copy to clipboard
+      document.getElementById("copyButton").addEventListener("click", () => {
+        const code = document.getElementById("embedCode").textContent;
+        navigator.clipboard.writeText(code).then(() => {
+          const successMessage = document.getElementById("copySuccess");
+          successMessage.style.display = "block";
+          setTimeout(() => {
+            successMessage.style.display = "none";
+          }, 2000);
+        });
+      });
+    </script>
+  </body>
+</html>
