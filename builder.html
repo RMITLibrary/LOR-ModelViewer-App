@@ -262,6 +262,7 @@
         <div class="tabs">
           <div class="tab active" data-tab="basic">Basic Settings</div>
           <div class="tab" data-tab="advanced">Advanced Settings</div>
+          <div class="tab" data-tab="accessibility">Accessibility</div>
           <div class="tab" data-tab="help">How to Use</div>
         </div>
 
@@ -338,6 +339,50 @@
 
           <div class="tab-content" id="advanced">
             <div class="form-group">
+              <label for="environmentImage">Environment Lighting</label>
+              <select id="environmentImage">
+                <option value="none">None (default)</option>
+                <option value="neutral">Neutral (built-in)</option>
+                <option value="legacy">Legacy (built-in)</option>
+                <option value="assets/neutral.jpg">Neutral (local JPG)</option>
+                <option value="assets/helipad.jpg">Helipad (JPG)</option>
+                <option value="assets/field.jpg">Field (JPG)</option>
+                <option value="assets/papermill.jpg">Papermill (JPG)</option>
+                <option value="assets/ennis.jpg">Ennis (JPG)</option>
+                <option value="assets/pisa.jpg">Pisa (JPG)</option>
+                <option value="assets/doge2.jpg">Doge2 (JPG)</option>
+                <option value="assets/chromatic.jpg">Chromatic (JPG)</option>
+                <option value="assets/directional.jpg">
+                  Directional (JPG)
+                </option>
+                <option value="assets/footprint_court.jpg">
+                  Footprint Court (JPG)
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="skyboxImage">Skybox Image</label>
+              <select id="skyboxImage">
+                <option value="none">None</option>
+                <option value="assets/neutral.jpg">Neutral (JPG)</option>
+                <option value="assets/helipad.jpg">Helipad (JPG)</option>
+                <option value="assets/field.jpg">Field (JPG)</option>
+                <option value="assets/papermill.jpg">Papermill (JPG)</option>
+                <option value="assets/ennis.jpg">Ennis (JPG)</option>
+                <option value="assets/pisa.jpg">Pisa (JPG)</option>
+                <option value="assets/doge2.jpg">Doge2 (JPG)</option>
+                <option value="assets/chromatic.jpg">Chromatic (JPG)</option>
+                <option value="assets/directional.jpg">
+                  Directional (JPG)
+                </option>
+                <option value="assets/footprint_court.jpg">
+                  Footprint Court (JPG)
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
               <label for="fieldOfView"
                 >Field of View: <span class="range-value">45</span>°</label
               >
@@ -392,110 +437,155 @@
             </div>
 
             <div class="form-group">
+              <label for="shadowIntensity"
+                >Shadow Intensity: <span class="range-value">1</span></label
+              >
+              <input
+                type="range"
+                id="shadowIntensity"
+                min="0"
+                max="2"
+                step="0.01"
+                value="1"
+              />
+            </div>
+
+            <div class="form-group">
               <label for="arButton">AR Button</label>
               <select id="arButton">
                 <option value="true">Show</option>
                 <option value="false">Hide</option>
               </select>
             </div>
+
+            <div class="form-group">
+              <label for="arButtonLabel">Custom AR Button Label</label>
+              <input
+                type="text"
+                id="arButtonLabel"
+                placeholder="e.g. View in your space"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="arPrompt">Custom AR Prompt</label>
+              <input
+                type="text"
+                id="arPrompt"
+                placeholder="e.g. Move your device to scan the space"
+              />
+            </div>
+          </div>
+
+          <div class="tab-content" id="accessibility">
+            <div class="form-group">
+              <label for="altText">Model Alt Text (for screen readers)</label>
+              <input type="text" id="altText" placeholder="A 3D model of ..." />
+            </div>
+            <div class="form-group">
+              <label for="a11yJson">Accessibility (a11y) JSON</label>
+              <textarea
+                id="a11yJson"
+                rows="6"
+                placeholder='{"front": "Front description", "back": "Back description", ...}'
+                style="width: 100%; font-family: monospace"
+              ></textarea>
+              <div style="font-size: 0.95em; color: #555; margin-top: 0.5em">
+                <strong>Tip:</strong> Enter a JSON object with keys for each
+                view (e.g. front, back, left, right, upper-front, etc).<br />
+                Example:
+                <code
+                  >{"front": "The front of the 3D model.", "back": "The back of
+                  the 3D model."}</code
+                ><br />
+                This improves screen reader accessibility and can provide
+                translations for different model views.
+              </div>
+            </div>
           </div>
 
           <div class="tab-content" id="help">
             <div class="help-section">
-              <h3>Supported 3D Model Formats</h3>
-              <ul>
-                <li>
-                  <strong>glTF/GLB</strong> (`.glb`, `.gltf`) - Recommended
-                  format, best performance and features
-                </li>
-                <li>
-                  <strong>USDZ</strong> (`.usdz`) - For iOS AR Quick Look
-                  support
-                </li>
-                <li><strong>OBJ</strong> (`.obj`) - Basic 3D model format</li>
-                <li>
-                  <strong>MTL</strong> (`.mtl`) - Material files for OBJ models
-                </li>
-              </ul>
-            </div>
-
-            <div class="help-section">
               <h3>How to Use</h3>
               <ol>
-                <li>Enter your 3D model URL in the Model URL field</li>
-                <li>Add a title and description (optional)</li>
-                <li>Select your preferred aspect ratio</li>
-                <li>Adjust advanced settings if needed</li>
-                <li>Click "Generate Embed Code"</li>
-                <li>Copy the generated code and paste it into your website</li>
+                <li>
+                  Enter your 3D model URL in the Model URL field (required).
+                  Supported formats: <code>.glb, .gltf, .usdz, .obj, .mtl</code>
+                </li>
+                <li>Optionally add a title and description.</li>
+                <li>
+                  Select your preferred aspect ratio or enter a custom one.
+                </li>
+                <li>
+                  Adjust advanced settings: environment lighting, skybox, field
+                  of view, zoom, rotation, AR, shadow intensity, and more.
+                </li>
+                <li>
+                  Switch to the Accessibility tab to add alt text and a11y JSON
+                  for screen readers.
+                </li>
+                <li>Click "Generate Embed Code" to get your iframe code.</li>
+                <li>
+                  Copy the generated code and paste it into your website or LMS.
+                </li>
+                <li>
+                  Use the live preview to see exactly how your embed will look
+                  and behave.
+                </li>
               </ol>
+              <div style="margin-top: 1rem">
+                <strong>Test Model URL:</strong><br />
+                <code
+                  >https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/Duck/glTF-Binary/Duck.glb</code
+                >
+              </div>
             </div>
-
             <div class="help-section">
               <h3>Tips for Best Results</h3>
               <ul>
-                <li>Use glTF/GLB format for best performance</li>
-                <li>Keep model file sizes under 50MB for optimal loading</li>
-                <li>Ensure your model is properly scaled and centered</li>
-                <li>Test the preview before embedding</li>
-                <li>Consider mobile users when setting aspect ratio</li>
+                <li>
+                  Use <code>.glb</code> or <code>.gltf</code> for best
+                  performance and compatibility.
+                </li>
+                <li>Keep model file sizes under 50MB for optimal loading.</li>
+                <li>Test the preview before embedding.</li>
+                <li>
+                  Consider mobile users when setting aspect ratio and controls.
+                </li>
+                <li>
+                  Use the Accessibility tab to improve screen reader support.
+                </li>
               </ul>
             </div>
-
             <div class="help-section">
               <h3>Common Issues & Solutions</h3>
               <div class="faq-item">
                 <h4>Model not loading?</h4>
                 <ul>
-                  <li>Check if the URL is accessible</li>
-                  <li>Verify the file format is supported</li>
-                  <li>Ensure the file size isn't too large</li>
-                  <li>Check if the server allows CORS</li>
+                  <li>Check if the URL is accessible and correct.</li>
+                  <li>Verify the file format is supported.</li>
+                  <li>Ensure the file size isn't too large.</li>
+                  <li>Check if the server allows CORS.</li>
                 </ul>
               </div>
               <div class="faq-item">
                 <h4>AR not working?</h4>
                 <ul>
-                  <li>Ensure you're using a supported device</li>
+                  <li>Ensure you're using a supported device.</li>
                   <li>
-                    Check if the model format is compatible (glTF/GLB or USDZ)
+                    Check if the model format is compatible (glTF/GLB or USDZ).
                   </li>
-                  <li>Verify the model has proper scale and orientation</li>
+                  <li>Verify the model has proper scale and orientation.</li>
                 </ul>
               </div>
               <div class="faq-item">
                 <h4>Performance issues?</h4>
                 <ul>
-                  <li>Optimise your 3D model (reduce polygon count)</li>
-                  <li>Use compressed textures</li>
-                  <li>Consider using a CDN for faster loading</li>
+                  <li>Optimize your 3D model (reduce polygon count).</li>
+                  <li>Use compressed textures.</li>
+                  <li>Consider using a CDN for faster loading.</li>
                 </ul>
               </div>
-            </div>
-
-            <div class="help-section">
-              <h3>Advanced Features</h3>
-              <ul>
-                <li>
-                  <strong>Environment Images:</strong> Choose from various
-                  lighting environments
-                </li>
-                <li>
-                  <strong>Field of View:</strong> Adjust how much of the scene
-                  is visible
-                </li>
-                <li>
-                  <strong>Zoom Levels:</strong> Control how close users can zoom
-                  to the model
-                </li>
-                <li>
-                  <strong>Auto-rotate:</strong> Enable automatic model rotation
-                </li>
-                <li>
-                  <strong>AR Support:</strong> View models in augmented reality
-                  on supported devices
-                </li>
-              </ul>
             </div>
           </div>
 
@@ -622,6 +712,15 @@
         const rotationSpeed = document.getElementById("rotationSpeed").value;
         const autoRotate = document.getElementById("autoRotate").value;
         const arButton = document.getElementById("arButton").value;
+        const environmentImage =
+          document.getElementById("environmentImage").value;
+        const skyboxImage = document.getElementById("skyboxImage").value;
+        const arButtonLabel = document.getElementById("arButtonLabel").value;
+        const arPrompt = document.getElementById("arPrompt").value;
+        const altText = document.getElementById("altText").value;
+        const a11yJson = document.getElementById("a11yJson").value;
+        const shadowIntensity =
+          document.getElementById("shadowIntensity").value;
 
         // Update preview container aspect ratio
         if (aspectRatio === "custom") {
@@ -650,6 +749,15 @@
         params.set("rotationSpeed", rotationSpeed);
         params.set("autoRotate", autoRotate);
         params.set("arButton", arButton);
+        if (environmentImage && environmentImage !== "none")
+          params.set("environmentImage", environmentImage);
+        if (skyboxImage && skyboxImage !== "none")
+          params.set("skyboxImage", skyboxImage);
+        if (arButtonLabel) params.set("arButtonLabel", arButtonLabel);
+        if (arPrompt) params.set("arPrompt", arPrompt);
+        if (altText) params.set("alt", altText);
+        if (a11yJson) params.set("a11y", encodeURIComponent(a11yJson));
+        params.set("shadowIntensity", shadowIntensity);
 
         // Get the current page URL and construct the full viewer URL
         const currentUrl = window.location.href;
@@ -705,6 +813,15 @@
         const rotationSpeed = document.getElementById("rotationSpeed").value;
         const autoRotate = document.getElementById("autoRotate").value;
         const arButton = document.getElementById("arButton").value;
+        const environmentImage =
+          document.getElementById("environmentImage").value;
+        const skyboxImage = document.getElementById("skyboxImage").value;
+        const arButtonLabel = document.getElementById("arButtonLabel").value;
+        const arPrompt = document.getElementById("arPrompt").value;
+        const altText = document.getElementById("altText").value;
+        const a11yJson = document.getElementById("a11yJson").value;
+        const shadowIntensity =
+          document.getElementById("shadowIntensity").value;
 
         // Build URL parameters
         const params = new URLSearchParams();
@@ -725,6 +842,15 @@
         params.set("rotationSpeed", rotationSpeed);
         params.set("autoRotate", autoRotate);
         params.set("arButton", arButton);
+        if (environmentImage && environmentImage !== "none")
+          params.set("environmentImage", environmentImage);
+        if (skyboxImage && skyboxImage !== "none")
+          params.set("skyboxImage", skyboxImage);
+        if (arButtonLabel) params.set("arButtonLabel", arButtonLabel);
+        if (arPrompt) params.set("arPrompt", arPrompt);
+        if (altText) params.set("alt", altText);
+        if (a11yJson) params.set("a11y", encodeURIComponent(a11yJson));
+        params.set("shadowIntensity", shadowIntensity);
 
         // Get the current page URL and construct the full viewer URL
         const currentUrl = window.location.href;
@@ -749,15 +875,24 @@
       });
 
       // Copy to clipboard
-      document.getElementById("copyButton").addEventListener("click", () => {
-        const code = document.getElementById("embedCode").textContent;
-        navigator.clipboard.writeText(code).then(() => {
-          const successMessage = document.getElementById("copySuccess");
-          successMessage.style.display = "block";
-          setTimeout(() => {
-            successMessage.style.display = "none";
-          }, 2000);
-        });
+      document.addEventListener("DOMContentLoaded", function () {
+        const copyButton = document.getElementById("copyButton");
+        if (copyButton) {
+          copyButton.addEventListener("click", function () {
+            const code = document.getElementById("embedCode").textContent;
+            if (code) {
+              navigator.clipboard.writeText(code).then(() => {
+                const successMessage = document.getElementById("copySuccess");
+                if (successMessage) {
+                  successMessage.style.display = "block";
+                  setTimeout(() => {
+                    successMessage.style.display = "none";
+                  }, 2000);
+                }
+              });
+            }
+          });
+        }
       });
     </script>
   </body>
