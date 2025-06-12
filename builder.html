@@ -252,6 +252,25 @@
         color: #6b7280;
         margin-top: 0.25rem;
       }
+
+      .tooltip {
+        display: inline-block;
+        background: #e5e7eb;
+        color: #2563eb;
+        border-radius: 50%;
+        width: 1.2em;
+        height: 1.2em;
+        text-align: center;
+        font-size: 1em;
+        font-weight: bold;
+        cursor: help;
+        margin-left: 0.3em;
+        line-height: 1.2em;
+      }
+
+      .how-to-use-section summary {
+        font-size: 1.1em;
+      }
     </style>
   </head>
   <body>
@@ -263,7 +282,6 @@
           <div class="tab active" data-tab="basic">Basic Settings</div>
           <div class="tab" data-tab="advanced">Advanced Settings</div>
           <div class="tab" data-tab="accessibility">Accessibility</div>
-          <div class="tab" data-tab="help">How to Use</div>
         </div>
 
         <form id="builderForm">
@@ -339,7 +357,14 @@
 
           <div class="tab-content" id="advanced">
             <div class="form-group">
-              <label for="environmentImage">Environment Lighting</label>
+              <label for="environmentImage"
+                >Environment Lighting
+                <span
+                  class="tooltip"
+                  title="Choose the lighting environment for your model."
+                  >?</span
+                >
+              </label>
               <select id="environmentImage">
                 <option value="none">None (default)</option>
                 <option value="neutral">Neutral (built-in)</option>
@@ -362,7 +387,14 @@
             </div>
 
             <div class="form-group">
-              <label for="skyboxImage">Skybox Image</label>
+              <label for="skyboxImage"
+                >Skybox Image
+                <span
+                  class="tooltip"
+                  title="Choose a background image for your scene."
+                  >?</span
+                >
+              </label>
               <select id="skyboxImage">
                 <option value="none">None</option>
                 <option value="assets/neutral.jpg">Neutral (JPG)</option>
@@ -384,8 +416,13 @@
 
             <div class="form-group">
               <label for="fieldOfView"
-                >Field of View: <span class="range-value">45</span>°</label
-              >
+                >Field of View: <span class="range-value">45</span>°
+                <span
+                  class="tooltip"
+                  title="Adjusts how much of the scene is visible."
+                  >?</span
+                >
+              </label>
               <input
                 type="range"
                 id="fieldOfView"
@@ -397,15 +434,21 @@
 
             <div class="form-group">
               <label for="minZoom"
-                >Minimum Zoom: <span class="range-value">25</span>%</label
-              >
+                >Minimum Zoom: <span class="range-value">25</span>%
+                <span class="tooltip" title="How far out users can zoom."
+                  >?</span
+                >
+              </label>
               <input type="range" id="minZoom" min="10" max="100" value="25" />
             </div>
 
             <div class="form-group">
               <label for="maxZoom"
-                >Maximum Zoom: <span class="range-value">200</span>%</label
-              >
+                >Maximum Zoom: <span class="range-value">200</span>%
+                <span class="tooltip" title="How far in users can zoom."
+                  >?</span
+                >
+              </label>
               <input
                 type="range"
                 id="maxZoom"
@@ -417,8 +460,11 @@
 
             <div class="form-group">
               <label for="rotationSpeed"
-                >Rotation Speed: <span class="range-value">30</span>°/s</label
-              >
+                >Rotation Speed: <span class="range-value">30</span>°/s
+                <span class="tooltip" title="How fast the model auto-rotates."
+                  >?</span
+                >
+              </label>
               <input
                 type="range"
                 id="rotationSpeed"
@@ -429,7 +475,14 @@
             </div>
 
             <div class="form-group">
-              <label for="autoRotate">Auto Rotate</label>
+              <label for="autoRotate"
+                >Auto Rotate
+                <span
+                  class="tooltip"
+                  title="Enable or disable automatic rotation."
+                  >?</span
+                >
+              </label>
               <select id="autoRotate">
                 <option value="true">Enabled</option>
                 <option value="false">Disabled</option>
@@ -438,8 +491,13 @@
 
             <div class="form-group">
               <label for="shadowIntensity"
-                >Shadow Intensity: <span class="range-value">1</span></label
-              >
+                >Shadow Intensity: <span class="range-value">1</span>
+                <span
+                  class="tooltip"
+                  title="Adjust the strength of shadows. 0 = off, 2 = strong."
+                  >?</span
+                >
+              </label>
               <input
                 type="range"
                 id="shadowIntensity"
@@ -451,15 +509,41 @@
             </div>
 
             <div class="form-group">
-              <label for="arButton">AR Button</label>
+              <label for="arButton"
+                >AR Button
+                <span class="tooltip" title="Show or hide the AR button."
+                  >?</span
+                >
+              </label>
               <select id="arButton">
                 <option value="true">Show</option>
                 <option value="false">Hide</option>
               </select>
             </div>
 
+            <div class="form-group" id="usdzGroup" style="display: block">
+              <label for="usdzUrl"
+                >USDZ File URL (for iOS AR)
+                <span
+                  class="tooltip"
+                  title="Provide a .usdz file for AR Quick Look on iOS."
+                  >?</span
+                >
+              </label>
+              <input
+                type="url"
+                id="usdzUrl"
+                placeholder="https://example.com/model.usdz"
+              />
+            </div>
+
             <div class="form-group">
-              <label for="arButtonLabel">Custom AR Button Label</label>
+              <label for="arButtonLabel"
+                >Custom AR Button Label
+                <span class="tooltip" title="Custom text for the AR button."
+                  >?</span
+                >
+              </label>
               <input
                 type="text"
                 id="arButtonLabel"
@@ -468,12 +552,30 @@
             </div>
 
             <div class="form-group">
-              <label for="arPrompt">Custom AR Prompt</label>
+              <label for="arPrompt"
+                >Custom AR Prompt
+                <span class="tooltip" title="Custom AR prompt text.">?</span>
+              </label>
               <input
                 type="text"
                 id="arPrompt"
                 placeholder="e.g. Move your device to scan the space"
               />
+            </div>
+
+            <div class="form-group">
+              <label for="disableZoom"
+                >Disable Zoom
+                <span
+                  class="tooltip"
+                  title="Prevent users from zooming the model."
+                  >?</span
+                >
+              </label>
+              <select id="disableZoom">
+                <option value="false">Allow Zoom</option>
+                <option value="true">Disable Zoom</option>
+              </select>
             </div>
           </div>
 
@@ -504,91 +606,6 @@
             </div>
           </div>
 
-          <div class="tab-content" id="help">
-            <div class="help-section">
-              <h3>How to Use</h3>
-              <ol>
-                <li>
-                  Enter your 3D model URL in the Model URL field (required).
-                  Supported formats: <code>.glb, .gltf, .usdz, .obj, .mtl</code>
-                </li>
-                <li>Optionally add a title and description.</li>
-                <li>
-                  Select your preferred aspect ratio or enter a custom one.
-                </li>
-                <li>
-                  Adjust advanced settings: environment lighting, skybox, field
-                  of view, zoom, rotation, AR, shadow intensity, and more.
-                </li>
-                <li>
-                  Switch to the Accessibility tab to add alt text and a11y JSON
-                  for screen readers.
-                </li>
-                <li>Click "Generate Embed Code" to get your iframe code.</li>
-                <li>
-                  Copy the generated code and paste it into your website or LMS.
-                </li>
-                <li>
-                  Use the live preview to see exactly how your embed will look
-                  and behave.
-                </li>
-              </ol>
-              <div style="margin-top: 1rem">
-                <strong>Test Model URL:</strong><br />
-                <code
-                  >https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/Duck/glTF-Binary/Duck.glb</code
-                >
-              </div>
-            </div>
-            <div class="help-section">
-              <h3>Tips for Best Results</h3>
-              <ul>
-                <li>
-                  Use <code>.glb</code> or <code>.gltf</code> for best
-                  performance and compatibility.
-                </li>
-                <li>Keep model file sizes under 50MB for optimal loading.</li>
-                <li>Test the preview before embedding.</li>
-                <li>
-                  Consider mobile users when setting aspect ratio and controls.
-                </li>
-                <li>
-                  Use the Accessibility tab to improve screen reader support.
-                </li>
-              </ul>
-            </div>
-            <div class="help-section">
-              <h3>Common Issues & Solutions</h3>
-              <div class="faq-item">
-                <h4>Model not loading?</h4>
-                <ul>
-                  <li>Check if the URL is accessible and correct.</li>
-                  <li>Verify the file format is supported.</li>
-                  <li>Ensure the file size isn't too large.</li>
-                  <li>Check if the server allows CORS.</li>
-                </ul>
-              </div>
-              <div class="faq-item">
-                <h4>AR not working?</h4>
-                <ul>
-                  <li>Ensure you're using a supported device.</li>
-                  <li>
-                    Check if the model format is compatible (glTF/GLB or USDZ).
-                  </li>
-                  <li>Verify the model has proper scale and orientation.</li>
-                </ul>
-              </div>
-              <div class="faq-item">
-                <h4>Performance issues?</h4>
-                <ul>
-                  <li>Optimize your 3D model (reduce polygon count).</li>
-                  <li>Use compressed textures.</li>
-                  <li>Consider using a CDN for faster loading.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
           <button type="submit">Generate Embed Code</button>
         </form>
 
@@ -599,6 +616,93 @@
             Copied to clipboard!
           </div>
         </div>
+
+        <!-- How to Use section inside builder-panel -->
+        <details class="how-to-use-section" style="margin-top: 2em">
+          <summary style="font-weight: 500; cursor: pointer">
+            How to Use
+          </summary>
+          <div class="help-section">
+            <h3>How to Use</h3>
+            <ol>
+              <li>
+                Enter your 3D model URL in the Model URL field (required).
+                Supported formats: <code>.glb, .gltf, .usdz, .obj, .mtl</code>
+              </li>
+              <li>Optionally add a title and description.</li>
+              <li>Select your preferred aspect ratio or enter a custom one.</li>
+              <li>
+                Adjust advanced settings: environment lighting, skybox, field of
+                view, zoom, rotation, AR, shadow intensity, and more.
+              </li>
+              <li>
+                Switch to the Accessibility tab to add alt text and a11y JSON
+                for screen readers.
+              </li>
+              <li>Click "Generate Embed Code" to get your iframe code.</li>
+              <li>
+                Copy the generated code and paste it into your website or LMS.
+              </li>
+              <li>
+                Use the live preview to see exactly how your embed will look and
+                behave.
+              </li>
+            </ol>
+            <div style="margin-top: 1rem">
+              <strong>Test Model URL:</strong><br />
+              <code
+                >https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/Duck/glTF-Binary/Duck.glb</code
+              >
+            </div>
+          </div>
+          <div class="help-section">
+            <h3>Tips for Best Results</h3>
+            <ul>
+              <li>
+                Use <code>.glb</code> or <code>.gltf</code> for best performance
+                and compatibility.
+              </li>
+              <li>Keep model file sizes under 50MB for optimal loading.</li>
+              <li>Test the preview before embedding.</li>
+              <li>
+                Consider mobile users when setting aspect ratio and controls.
+              </li>
+              <li>
+                Use the Accessibility tab to improve screen reader support.
+              </li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h3>Common Issues & Solutions</h3>
+            <div class="faq-item">
+              <h4>Model not loading?</h4>
+              <ul>
+                <li>Check if the URL is accessible and correct.</li>
+                <li>Verify the file format is supported.</li>
+                <li>Ensure the file size isn't too large.</li>
+                <li>Check if the server allows CORS.</li>
+              </ul>
+            </div>
+            <div class="faq-item">
+              <h4>AR not working?</h4>
+              <ul>
+                <li>Ensure you're using a supported device.</li>
+                <li>
+                  Check if the model format is compatible (glTF/GLB or USDZ).
+                </li>
+                <li>Verify the model has proper scale and orientation.</li>
+              </ul>
+            </div>
+            <div class="faq-item">
+              <h4>Performance issues?</h4>
+              <ul>
+                <li>Optimize your 3D model (reduce polygon count).</li>
+                <li>Use compressed textures.</li>
+                <li>Consider using a CDN for faster loading.</li>
+              </ul>
+            </div>
+          </div>
+        </details>
       </div>
 
       <div class="preview-panel">
@@ -721,6 +825,7 @@
         const a11yJson = document.getElementById("a11yJson").value;
         const shadowIntensity =
           document.getElementById("shadowIntensity").value;
+        const usdzUrl = document.getElementById("usdzUrl").value;
 
         // Update preview container aspect ratio
         if (aspectRatio === "custom") {
@@ -758,6 +863,7 @@
         if (altText) params.set("alt", altText);
         if (a11yJson) params.set("a11y", encodeURIComponent(a11yJson));
         params.set("shadowIntensity", shadowIntensity);
+        if (usdzUrl) params.set("usdz", usdzUrl);
 
         // Get the current page URL and construct the full viewer URL
         const currentUrl = window.location.href;
@@ -771,6 +877,18 @@
         previewIframe.style.display = "block";
         previewPlaceholder.style.display = "none";
       }
+
+      // Show/hide USDZ input based on AR Button selection
+      document
+        .getElementById("arButton")
+        .addEventListener("change", function () {
+          const usdzGroup = document.getElementById("usdzGroup");
+          if (this.value === "true") {
+            usdzGroup.style.display = "block";
+          } else {
+            usdzGroup.style.display = "none";
+          }
+        });
 
       // Form submission
       document.getElementById("builderForm").addEventListener("submit", (e) => {
@@ -822,6 +940,7 @@
         const a11yJson = document.getElementById("a11yJson").value;
         const shadowIntensity =
           document.getElementById("shadowIntensity").value;
+        const usdzUrl = document.getElementById("usdzUrl").value;
 
         // Build URL parameters
         const params = new URLSearchParams();
@@ -851,6 +970,7 @@
         if (altText) params.set("alt", altText);
         if (a11yJson) params.set("a11y", encodeURIComponent(a11yJson));
         params.set("shadowIntensity", shadowIntensity);
+        if (usdzUrl) params.set("usdz", usdzUrl);
 
         // Get the current page URL and construct the full viewer URL
         const currentUrl = window.location.href;

@@ -130,6 +130,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const shadowIntensity = urlParams.get("shadowIntensity") !== null ? parseFloat(urlParams.get("shadowIntensity")) : 1;
     const altText = urlParams.get("alt");
     const a11yJson = urlParams.get("a11y");
+    const usdzUrl = urlParams.get("usdz");
 
     // Set title if provided
     if (title) {
@@ -169,6 +170,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (environmentImage) modelViewer.setAttribute("environment-image", environmentImage);
     if (skyboxImage) modelViewer.setAttribute("skybox-image", skyboxImage);
     modelViewer.setAttribute("shadow-intensity", isNaN(shadowIntensity) ? "1" : shadowIntensity.toString());
+    if (usdzUrl) modelViewer.setAttribute("ios-src", usdzUrl);
 
     // AR button logic
     if (arButton) {
