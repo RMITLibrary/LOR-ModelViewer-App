@@ -110,9 +110,6 @@
             orbitSensitivity: 1,
             rotationSpeed: 30,
             autoRotate: true,
-            shadowIntensity: 1,
-            exposure: 1,
-            environmentImage: "neutral",
           };
 
           // Sanitise numeric values
@@ -120,12 +117,6 @@
             const num = parseFloat(value);
             if (isNaN(num)) return defaultValue;
             return Math.min(Math.max(num, min), max);
-          }
-
-          // Sanitise string values
-          function sanitiseString(value, allowedValues, defaultValue) {
-            if (!value || !allowedValues.includes(value)) return defaultValue;
-            return value;
           }
 
           // Get and sanitise URL parameters
@@ -171,24 +162,6 @@
             90,
             defaults.fieldOfView
           );
-          const minFieldOfView = sanitiseNumber(
-            urlParams.get("minFieldOfView"),
-            5,
-            45,
-            defaults.minFieldOfView
-          );
-          const maxFieldOfView = sanitiseNumber(
-            urlParams.get("maxFieldOfView"),
-            45,
-            120,
-            defaults.maxFieldOfView
-          );
-          const orbitSensitivity = sanitiseNumber(
-            urlParams.get("orbitSensitivity"),
-            0.1,
-            5,
-            defaults.orbitSensitivity
-          );
           const rotationSpeed = sanitiseNumber(
             urlParams.get("rotationSpeed"),
             0,
@@ -196,39 +169,7 @@
             defaults.rotationSpeed
           );
           const autoRotate = urlParams.get("autoRotate") !== "false";
-          const shadowIntensity = sanitiseNumber(
-            urlParams.get("shadowIntensity"),
-            0,
-            2,
-            defaults.shadowIntensity
-          );
-          const exposure = sanitiseNumber(
-            urlParams.get("exposure"),
-            0,
-            2,
-            defaults.exposure
-          );
-
-          // Environment image options
-          const allowedEnvironments = [
-            "neutral",
-            "legacy",
-            "sunset",
-            "dawn",
-            "night",
-            "warehouse",
-            "forest",
-            "apartment",
-            "studio",
-            "city",
-            "park",
-            "lobby",
-          ];
-          const environmentImage = sanitiseString(
-            urlParams.get("environmentImage"),
-            allowedEnvironments,
-            defaults.environmentImage
-          );
+          const arButton = urlParams.get("arButton") !== "false";
 
           // Set title if provided
           if (title) {
@@ -249,31 +190,36 @@
           // Set all attributes
           modelViewer.setAttribute("id", "model-viewer");
           modelViewer.setAttribute("camera-controls", "");
-          modelViewer.setAttribute("auto-rotate", autoRotate);
-          modelViewer.setAttribute("shadow-intensity", shadowIntensity);
-          modelViewer.setAttribute("exposure", exposure);
-          modelViewer.setAttribute("environment-image", environmentImage);
-          modelViewer.setAttribute("ar", "");
-          modelViewer.setAttribute("ar-modes", "webxr scene-viewer quick-look");
-          modelViewer.setAttribute("ar-scale", "fixed");
-          modelViewer.setAttribute("ar-placement", "floor");
+          if (autoRotate) modelViewer.setAttribute("auto-rotate", "");
           modelViewer.setAttribute("min-camera-orbit", `auto auto ${minZoom}%`);
           modelViewer.setAttribute("max-camera-orbit", `auto auto ${maxZoom}%`);
-          modelViewer.setAttribute("camera-orbit", "0deg 75deg 105%");
           modelViewer.setAttribute("field-of-view", `${fieldOfView}deg`);
-          modelViewer.setAttribute("min-field-of-view", `${minFieldOfView}deg`);
-          modelViewer.setAttribute("max-field-of-view", `${maxFieldOfView}deg`);
-          modelViewer.setAttribute("interpolation-decay", "200");
-          modelViewer.setAttribute("touch-action", "pan-y pinch-zoom");
-          modelViewer.setAttribute("interaction-prompt", "auto");
-          modelViewer.setAttribute("interaction-prompt-style", "basic");
-          modelViewer.setAttribute("interaction-prompt-threshold", "0");
-          modelViewer.setAttribute("orbit-sensitivity", orbitSensitivity);
           modelViewer.setAttribute(
             "rotation-per-second",
             `${rotationSpeed}deg`
           );
+          modelViewer.setAttribute("touch-action", "pan-y pinch-zoom");
+          modelViewer.setAttribute("interaction-prompt", "auto");
+          modelViewer.setAttribute("interaction-prompt-style", "basic");
+          modelViewer.setAttribute("interaction-prompt-threshold", "0");
+          modelViewer.setAttribute("camera-orbit", "0deg 75deg 105%");
+          modelViewer.setAttribute("min-field-of-view", "10deg");
+          modelViewer.setAttribute("max-field-of-view", "90deg");
+          modelViewer.setAttribute("interpolation-decay", "200");
+          modelViewer.setAttribute("alt", title || "3D model viewer");
+          modelViewer.setAttribute("aria-label", title || "3D model viewer");
           modelViewer.setAttribute("src", validatedModelUrl);
+
+          // AR button logic
+          if (arButton) {
+            modelViewer.setAttribute("ar", "");
+            modelViewer.setAttribute(
+              "ar-modes",
+              "webxr scene-viewer quick-look"
+            );
+            modelViewer.setAttribute("ar-scale", "fixed");
+            modelViewer.setAttribute("ar-placement", "floor");
+          }
 
           // Add error handling for model loading
           modelViewer.addEventListener("error", (error) => {
