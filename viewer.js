@@ -164,13 +164,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     modelViewer.setAttribute("min-field-of-view", "10deg");
     modelViewer.setAttribute("max-field-of-view", "90deg");
     modelViewer.setAttribute("interpolation-decay", "200");
+    modelViewer.setAttribute("src", validatedModelUrl);
+    if (usdzUrl) modelViewer.setAttribute("ios-src", usdzUrl);
     modelViewer.setAttribute("alt", altText || title || "3D model viewer");
     modelViewer.setAttribute("aria-label", title || "3D model viewer");
-    modelViewer.setAttribute("src", validatedModelUrl);
     if (environmentImage) modelViewer.setAttribute("environment-image", environmentImage);
     if (skyboxImage) modelViewer.setAttribute("skybox-image", skyboxImage);
     modelViewer.setAttribute("shadow-intensity", isNaN(shadowIntensity) ? "1" : shadowIntensity.toString());
-    if (usdzUrl) modelViewer.setAttribute("ios-src", usdzUrl);
 
     // AR button logic
     if (arButton) {
