@@ -92,6 +92,7 @@ MIT License. See [LICENSE](LICENSE) for details.
 - [Google Model Viewer](https://modelviewer.dev/)
 - [KhronosGroup](https://github.com/KhronosGroup/glTF-Sample-Environments) for sample HDRI/JPG images
 - [Duck.glb sample model](https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/Duck/glTF-Binary/Duck.glb)
+- "Muscle_ Rig" (https://skfb.ly/oJKWD) by 3DollarGuy is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
 ---
 
